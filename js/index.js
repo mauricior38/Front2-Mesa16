@@ -59,42 +59,53 @@ const baseDeDados = {
     }
 };
 
-let consultandoBaseDeDados = new Promise((resolve, reject) => {
-    // Aqui temos uma solicitação simulada para um banco de dados, com um atraso de 2 segundos.
-    //A lógica interna estará  no servidor e nós apenas esperaríamos por uma resposta.
-    setTimeout(function () {
-        if (baseDeDados == null) {
-            reject({
-                "mensagem": "Base de dados inexistente."
-            });
-        } else {
-            resolve(baseDeDados);
-        }
-    }, 1000);
+// LINK RANDOMICO DO USUARIO -> https://randomuser.me/api/
 
+
+
+// let consultandoBaseDeDados = new Promise((resolve, reject) => {
+//     // Aqui temos uma solicitação simulada para um banco de dados, com um atraso de 2 segundos.
+//     //A lógica interna estará  no servidor e nós apenas esperaríamos por uma resposta.
+//     setTimeout(function () {
+//         if (baseDeDados == null) {
+//             reject({
+//                 "mensagem": "Base de dados inexistente."
+//             });
+//         } else {
+//             resolve(baseDeDados);
+//         }
+//     }, 1000);
+
+// });
+
+fetch('https://randomuser.me/api/')
+.then(response => {
+    return response.json()
+})
+.then(data => {
+    //manipulamos a resposta
+    // console.log(data)
+    renderizarDadosUsuario(data)
 });
 
+
 // Aqui realizamos uma consulta da promessa, aguardando sua resposta assíncrona
-consultandoBaseDeDados
-    .then((resposta) => {
-        // console.log(`${resposta.resultado[0].imagem.media}`);
-        // console.log(`${resposta.resultado[0].nome.primeiro} ${resposta.resultado[0].nome.utlimo}`);
-        // console.log(`${resposta.resultado[0].email}`);
+// consultandoBaseDeDados
+//     .then((resposta) => {
 
-        const dados = {
-            img: resposta.resultado[0].imagem.grande,
-            nomeCompleto: `${resposta.resultado[0].nome.primeiro} ${resposta.resultado[0].nome.utlimo}`,
-            email: resposta.resultado[0].email
-        }
+//         const dados = {
+//             img: resposta.resultado[0].imagem.grande,
+//             nomeCompleto: `${resposta.resultado[0].nome.primeiro} ${resposta.resultado[0].nome.utlimo}`,
+//             email: resposta.resultado[0].email
+//         }
 
-        renderizarDadosUsuario(dados)
-    }).then(
+//         renderizarDadosUsuario(dados)
+//     }).then(
+//     ).catch((err) => {
+//         console.log(err);
+//     });
 
-    ).catch((err) => {
-        console.log(err);
-    });
-
-function renderizarDadosUsuario(dados) {
+function renderizarDadosUsuario(data) {
     /* -------------------------------- TAREFAS -------------------------------- */
     // Aqui  devem desenvolver uma função que é exibida na tela:
     // a foto, o nome completo do usuário e seu e-mail.
@@ -110,7 +121,7 @@ function renderizarDadosUsuario(dados) {
 
     let img = document.createElement("img")
     img.classList.add("card-img-top")
-    img.src = `${dados.img}`
+    img.src = `${data.results[0].picture.large}`
     card.appendChild(img)
 
     let cardBody = document.createElement("div")
@@ -123,7 +134,7 @@ function renderizarDadosUsuario(dados) {
 
     const cardNome = document.createElement("h5")
     cardNome.classList.add("card-title")
-    const textTitle = document.createTextNode(`${dados.nomeCompleto}`);
+    const textTitle = document.createTextNode(`${data.results[0].name.first} ${data.results[0].name.last}`);
     cardNome.appendChild(textTitle);
     cardBody.appendChild(cardNome)
 
@@ -133,8 +144,16 @@ function renderizarDadosUsuario(dados) {
 
     const cardEmail = document.createElement("h5")
     cardEmail.classList.add("card-title")
-    const textEmail = document.createTextNode(`${dados.email}`);
+    const textEmail = document.createTextNode(`${data.results[0].email}`);
     cardEmail.appendChild(textEmail);
     cardBody.appendChild(cardEmail)
 }
+
+let atualizar = document.getElementById("atualizaPg").addEventListener("click", function(event){
+  event.preventDefault()
+
+  window.location.reload();
+});
+   
+
 
